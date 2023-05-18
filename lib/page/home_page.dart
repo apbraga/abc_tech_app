@@ -33,12 +33,7 @@ class HomePage extends GetView<AssistanceController>{
                   Expanded(child: Text("Os Serviços disponíveis são:",textAlign: TextAlign.center,)),
                 ]
               ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(child: TextButton(onPressed: controller.getAssistanceList, child: const Text("Carregar")))
-                ]
-              ),
+              const SizedBox(height: 20),
               controller.obx((state) => _renderAssists(state?? []),
                 onLoading: const Center(child: CircularProgressIndicator()),
                 onEmpty: const Text("Nenhum serviço disponível"),
