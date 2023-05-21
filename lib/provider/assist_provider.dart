@@ -1,6 +1,6 @@
 import 'package:abc_tech_app/constants.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:get/get_connect.dart';
+
 
 abstract class AssistanceProviderInterface {
   Future<Response> getAssists();

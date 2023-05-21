@@ -12,8 +12,8 @@ void main() {
   runApp(const MyApp());
 }
 
-void initServices() async {
-  await Get.put<AssistanceService>(AssistanceService().init(AssistanceProvider()));
+void initServices() {
+  Get.put<AssistanceService>(AssistanceService().init(AssistanceProvider()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
-        highlightColor: Colors.black54,
+        highlightColor: Colors.red,
         textTheme: const TextTheme( headlineLarge: TextStyle(color: Colors.blueGrey, fontSize: 18),
         headlineMedium: TextStyle(color: Colors.blueGrey, fontSize: 16))),
       getPages: [

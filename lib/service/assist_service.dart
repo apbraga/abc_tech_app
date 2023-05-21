@@ -1,9 +1,9 @@
 import 'package:abc_tech_app/model/assist.dart';
+import 'package:abc_tech_app/provider/assist_provider.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
+import 'package:get/get_connect.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/utils.dart';
-import '../provider/assist_provider.dart';
 
 class AssistanceService extends GetxService {
   late AssistanceProviderInterface _assistanceProvider;
@@ -13,13 +13,15 @@ class AssistanceService extends GetxService {
     return this;
   }
 
-  Future<List<Assist>> getAssists() async{
+  Future<List<Assist>> getAssists() async {
     Response response = await _assistanceProvider.getAssists();
-    if(response.hasError){
+    if (response.hasError) {
       return Future.error(ErrorDescription("Erro na conexão"));
     }
-    try{
-      List<Assist> list = response.body.map<Assist>((item) => Assist.fromMap(item)).toList();
+
+    try {
+      List<Assist> list =
+      response.body.map<Assist>((item) => Assist.fromMap(item)).toList();
       return Future.sync(() => list);
     } catch (e) {
       e.printError();

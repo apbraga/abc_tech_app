@@ -5,42 +5,17 @@ class Assist {
   String title;
   String description;
 
-//<editor-fold desc="Data Methods">
   Assist({
     required this.id,
     required this.title,
     required this.description,
   });
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Assist &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          title == other.title &&
-          description == other.description);
-
-  @override
-  int get hashCode => id.hashCode ^ title.hashCode ^ description.hashCode;
-
-  String toJson() => json.encode(toMap());
-  factory Assist.fromJson(String source) => Assist.fromMap(json.decode(source));
-
-  @override
-  String toString() {
-    return 'Assist{' +
-        ' id: $id,' +
-        ' title: $title,' +
-        ' description: $description,' +
-        '}';
-  }
-
   Map<String, dynamic> toMap() {
-    return {
-      'id': this.id,
-      'title': this.title,
-      'description': this.description,
+    return <String, dynamic>{
+      'id': id,
+      'title': title,
+      'description': description,
     };
   }
 
@@ -52,5 +27,24 @@ class Assist {
     );
   }
 
-//</editor-fold>
+  String toJson() => json.encode(toMap());
+
+  factory Assist.fromJson(String source) =>
+      Assist.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() =>
+      'Assist(id: $id, title: $title, description: $description)';
+
+  @override
+  bool operator ==(covariant Assist other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.title == title &&
+        other.description == description;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode ^ description.hashCode;
 }

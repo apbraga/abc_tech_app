@@ -1,18 +1,18 @@
 import 'package:geolocator/geolocator.dart';
 
 abstract class GeolocationServiceInterface {
+  // ignore: unused_element
   Future<bool> _enableGeolocation();
-  Future<void> _requestPermission();
+  // ignore: unused_element
+  Future<void> _requestPermissions();
   bool isPermissionEnabled();
   Future<Position> getPosition();
   Future<bool> start();
 }
 
 class GeolocationService implements GeolocationServiceInterface {
-
   bool _serviceEnabled = false;
   late LocationPermission _permission;
-
 
   @override
   Future<bool> _enableGeolocation() async {
@@ -24,22 +24,23 @@ class GeolocationService implements GeolocationServiceInterface {
   }
 
   @override
-  Future<void> _requestPermission() async {
+  Future<void> _requestPermissions() async {
     _permission = await Geolocator.checkPermission();
     if (!isPermissionEnabled()) {
-      return Future.error("Permission denied");
+      return Future.error("Permission denied ");
     }
-    return Future.sync(() => true);
+    return Future.sync(() => null);
   }
 
   @override
-  Future<Position> getPosition() {
+  Future<Position> getPosition() async {
     return Geolocator.getCurrentPosition();
   }
 
   @override
   bool isPermissionEnabled() {
-    if (_permission == LocationPermission.denied || _permission == LocationPermission.deniedForever) {
+    if (_permission == LocationPermission.denied ||
+        _permission == LocationPermission.deniedForever) {
       return false;
     }
     return true;
@@ -49,10 +50,9 @@ class GeolocationService implements GeolocationServiceInterface {
   Future<bool> start() async {
     bool enabled = await _enableGeolocation();
     if (enabled) {
-      await _requestPermission();
+      await _requestPermissions();
       return Future.sync(() => isPermissionEnabled());
     }
     return Future.sync(() => false);
   }
-
 }
