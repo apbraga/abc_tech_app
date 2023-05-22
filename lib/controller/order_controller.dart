@@ -18,8 +18,8 @@ class OrderController extends GetxController with StateMixin<bool> {
   final selectedAssists = <Assist>[].obs;
   late Order? _order;
   final screenState = OrderState.creating.obs;
-  OrderController(this._geolocationService, this._orderService);
 
+  OrderController(this._geolocationService, this._orderService);
 
 
   @override
@@ -34,47 +34,20 @@ class OrderController extends GetxController with StateMixin<bool> {
   }
 
   getLocation() {
-    _geolocationService.getPosition().then((value) => log(value.toJson().toString()));
+    _geolocationService.getPosition().then((value) =>
+        log(value.toJson().toString()));
   }
 
-  editAssist(){
+  editAssist() {
     Get.toNamed("/services", arguments: selectedAssists);
   }
 
-
-  finishStartOrder() {
-    switch (screenState.value) {
-      case OrderState.creating:
-        change(true, status: RxStatus.loading());
-        _geolocationService.getPosition().then((value) {
-          var start = OrderLocation(
-              latitude: value.latitude,
-              longitude: value.longitude,
-              dateTime: DateTime.now());
-          List<int> assists =
-          selectedAssists.map((element) => element.id).toList();
-          _order = Order(
-              operatorId: int.parse(operatorIdController.text),
-              services: assists);
-          _order!.start = start;
-          screenState.value = OrderState.started;
-          change(true, status: RxStatus.success());
-        });
-        break;
-      case OrderState.started:
-        _geolocationService.getPosition().then((value) {
-          var end = OrderLocation(
-              latitude: value.latitude,
-              longitude: value.longitude,
-              dateTime: DateTime.now());
-          _order!.end = end;
-          screenState.value = OrderState.finished;
-          _createOrder();
-        });
-        break;
-      case OrderState.finished:
-        break;
-    }
+  void clearForm() {
+    operatorIdController.text = "";
+    _order = null;
+    selectedAssists.clear();
+    screenState.value = OrderState.creating;
+    change(true, status: RxStatus.success());
   }
 
   void _createOrder() {
@@ -95,11 +68,45 @@ class OrderController extends GetxController with StateMixin<bool> {
     });
   }
 
-  void clearForm() {
-    operatorIdController.text = "";
-    _order = null;
-    selectedAssists.clear();
-    screenState.value = OrderState.creating;
-    change(true, status: RxStatus.success());
+  finishStartOrder() {
+    // if selectedAssists.isEmpty or operatorIdController.text.isEmpty
+
+    if (selectedAssists.isEmpty || operatorIdController.text.isEmpty) {
+      Get.snackbar("Erro", "Preencha todos os campos",backgroundColor: Colors.red);
+    }
+    else {
+      switch (screenState.value) {
+        case OrderState.creating:
+          change(true, status: RxStatus.loading());
+          _geolocationService.getPosition().then((value) {
+            var start = OrderLocation(
+                latitude: value.latitude,
+                longitude: value.longitude,
+                dateTime: DateTime.now());
+            List<int> assists =
+            selectedAssists.map((element) => element.id).toList();
+            _order = Order(
+                operatorId: int.parse(operatorIdController.text),
+                services: assists);
+            _order!.start = start;
+            screenState.value = OrderState.started;
+            change(true, status: RxStatus.success());
+          });
+          break;
+        case OrderState.started:
+          _geolocationService.getPosition().then((value) {
+            var end = OrderLocation(
+                latitude: value.latitude,
+                longitude: value.longitude,
+                dateTime: DateTime.now());
+            _order!.end = end;
+            screenState.value = OrderState.finished;
+            _createOrder();
+          });
+          break;
+        case OrderState.finished:
+          break;
+      }
+    }
   }
 }
